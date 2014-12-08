@@ -7,8 +7,6 @@ Javascript/CSS projection mapping utility.  Put your internets on things!
 
 When you include `maptastic.min.js` in your page, a new class named `Maptastic` is defined. The first step is to instantiate Maptastic, which can be done a couple of different ways depending on your needs. For most simple cases, this only requires a _single line of code_.
 
-[SHOW ME THE DEMO!!!!](wefwf)
-
 	<html>
 	<head>
 		<style>
@@ -51,7 +49,7 @@ Since the idea is to have a projector aimed all crazy-like, the controls are all
 
 `'c'` Toggle mouse cursor crosshairs
 
----
+
 ## How about that code?
 
 ### Constructor:
