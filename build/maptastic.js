@@ -11,9 +11,10 @@ var Maptastic = function(config) {
     }
   }
 
-  var showLayerNames  = getProp(config, 'showLayerNames', true);
+  var showLayerNames  = getProp(config, 'labels', true);
   var showCrosshairs  = getProp(config, 'crosshairs', false);
   var autoSave        = getProp(config, 'autoSave', true);
+  var autoLoad        = getProp(config, 'autoLoad', true);
   var layerList       = getProp(config, 'layers', []);
   var layoutChangeListener = getProp(config, 'onchange', function(){} );
   var localStorageKey = 'maptastic.layers';
@@ -559,6 +560,10 @@ var Maptastic = function(config) {
     }
   }
 
+  if(autoLoad){
+    loadSettings();
+  }
+
   return {
   	'getLayout' : function() {
 		  return getLayout();
@@ -571,12 +576,6 @@ var Maptastic = function(config) {
 		},
 		'addLayer' : function(target, targetPoints){
 			addLayer(target, targetPoints);
-		},
-    'saveLayout' : function(){
-      saveSettings();
-    },
-    'loadLayout' : function(){
-      loadSettings();
-    }
+		}
   }
 };
