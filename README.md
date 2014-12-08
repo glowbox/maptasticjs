@@ -12,10 +12,10 @@ When you include `maptastic.min.js` in your page, a new class named `Maptastic` 
 	<html>
 	<head>
 		<style>
-			#so-simple{
-				width:300px;
-				height:300px;
-				background:green;
+			#so-simple {
+				width: 300px;
+				height: 300px;
+				background: green;
 			}
 		</style>
 	</head>
@@ -23,7 +23,7 @@ When you include `maptastic.min.js` in your page, a new class named `Maptastic` 
 
 		<div id="so-simple">This is pretty simple.</div>
 
-		<script src="../build/maptastic.min.js"></script>
+		<script src="maptastic.min.js"></script>
 		<script>
 			Maptastic("so-simple");
 		</script>
@@ -31,6 +31,28 @@ When you include `maptastic.min.js` in your page, a new class named `Maptastic` 
 	</body>
 	</html>
 
+
+## Controls
+Since the idea is to have a projector aimed all crazy-like, the controls are all keyboard and mouse based since any UI would either get in the way, or would be impossible to see in most cases anyway.
+
+`SHIFT` + `Space` Toggle edit mode
+
+#### While In Edit Mode
+
+`click` or `drag` select and move quads/corner points
+
+`SHIFT` + `drag` move selcted quad/corner point with 10x precision
+
+`Arrow keys` move selected quad/corner point
+
+`SHIFT` + `Arrow keys` move selected quad/corner point by 10 pixels
+
+`'s'` Halt current drag operation without releasing mouse (helps with drag/unclick annoying behavior on trackpads)
+
+`'c'` Toggle mouse cursor crosshairs
+
+---
+## How about that code?
 
 ### Constructor:
 
@@ -55,7 +77,7 @@ For more advanced useage, specify a configuration object. Available configuratio
 		onLayoutChange: myChangeHandler,
 		layers: ["element-id1", "element-id2"]
 	};
-	Maptastic(configObject);
+	var maptastic = Maptastic(configObject);
 
 ##### Configuration options
 
