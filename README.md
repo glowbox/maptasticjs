@@ -7,7 +7,7 @@ Javascript/CSS projection mapping utility.  Put your internets on things!
 
 When you include `maptastic.min.js` in your page, a new class named `Maptastic` is defined. The first step is to instantiate Maptastic, which can be done a couple of different ways depending on your needs. For most simple cases, this only requires a _single line of code_.
 
-[SHOW ME THE DEMO](https://glowbox.github.io/maptastic/example/index.html)
+[SHOW ME THE DEMO](https://glowbox.github.io/maptasticjs/example/index.html)
 
 	<html>
 	<head>
