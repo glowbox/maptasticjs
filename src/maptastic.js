@@ -2,7 +2,7 @@
 var Maptastic = function(config) {
 
   var getProp = function(cfg, key, defaultVal){
-    if(cfg && cfg.hasOwnProperty(key)){
+    if(cfg && cfg.hasOwnProperty(key) && (cfg[key] !== null)) {
       return cfg[key];
     } else {
       return defaultVal;
