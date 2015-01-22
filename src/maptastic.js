@@ -402,7 +402,7 @@ var Maptastic = function(config) {
 	  var offsetX = element.offsetLeft;
 	  var offsetY = element.offsetTop;
 
-	  element.style.position = 'absolute';
+	  element.style.position = 'fixed';
 	  element.style.display = 'block';
 	  element.style.top = '0px';
 	  element.style.left = '0px';
