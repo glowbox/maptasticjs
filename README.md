@@ -53,6 +53,14 @@ Since the idea is to have a projector aimed all crazy-like, the controls are all
 
 `'c'` Toggle mouse cursor crosshairs
 
+`'b'` Toggle display bounds/metrics
+
+`'r'` Rotate selected layer 90 degrees clockwise
+
+`'h'` Flip selected layer horizontally
+
+`'v'` Flip selected layer vertically
+
 
 ## How about that code?
 

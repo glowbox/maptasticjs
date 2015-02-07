@@ -35,6 +35,7 @@ var Maptastic = function(config) {
 
   var showLayerNames  = getProp(config, 'labels', true);
   var showCrosshairs  = getProp(config, 'crosshairs', false);
+  var showScreenBounds  = getProp(config, 'screenbounds', false);
   var autoSave        = getProp(config, 'autoSave', true);
   var autoLoad        = getProp(config, 'autoLoad', true);
   var layerList       = getProp(config, 'layers', []);
@@ -102,7 +103,7 @@ var Maptastic = function(config) {
 	  
 	  context.strokeStyle = "red";
 	  context.lineWidth = 2;
-	  context.clearRect(0, 0, canvas.width, canvas.height);
+	  context.clearRect(0, 0, canvas.width, canvas.height);	  
 	  
 	  for(var i = 0; i < layers.length; i++) {
 	    
@@ -166,7 +167,7 @@ var Maptastic = function(config) {
 	  // Draw mouse crosshairs
 	  if(showCrosshairs) {
 	    context.strokeStyle = "yellow";
-	    context.lineWidth = "1px";
+	    context.lineWidth = 1;
 	    
 	    context.beginPath();
 	    
@@ -178,7 +179,48 @@ var Maptastic = function(config) {
 	    
 	    context.stroke();
 	  }
+
+	  if(showScreenBounds) {
+
+	  	context.fillStyle = "black";
+	    context.lineWidth = 4;
+	  	context.fillRect(0,0,canvas.width,canvas.height);
+	  	
+	  	context.strokeStyle = "#909090";
+	  	context.beginPath();
+	  	var stepX = canvas.width / 10;
+	  	var stepY = canvas.height / 10;
+
+	  	for(var i = 0; i < 10; i++) {
+	  		context.moveTo(i * stepX, 0);
+	    	context.lineTo(i * stepX, canvas.height);
+
+	    	context.moveTo(0, i * stepY);
+	    	context.lineTo(canvas.width, i * stepY);
+			}
+	    context.stroke();
+			
+			context.strokeStyle = "white";
+	    context.strokeRect(2, 2, canvas.width-4,canvas.height-4);
+
+	    var fontSize = Math.round(stepY * 0.6);
+	    context.font = fontSize + "px mono,sans-serif";
+	    context.fillRect(stepX*2+2, stepY*3+2, canvas.width-stepX*4-4, canvas.height-stepY*6-4);
+	    context.fillStyle = "white";
+	    context.fontSize = 20;
+	    context.fillText(canvas.width + " x " + canvas.height, canvas.width/2, canvas.height/2 + (fontSize * 0.75));
+	    context.fillText('display size', canvas.width/2, canvas.height/2 - (fontSize * 0.75));
+	  }
 	};
+
+	var swapLayerPoints = function(layerPoints, index1, index2){
+		var tx = layerPoints[index1][0];
+		var ty = layerPoints[index1][1];
+		layerPoints[index1][0] = layerPoints[index2][0];
+		layerPoints[index1][1] = layerPoints[index2][1];
+		layerPoints[index2][0] = tx;
+		layerPoints[index2][1] = ty;
+	}
 
 	var init = function(){
 	  canvas = document.createElement('canvas');
@@ -229,15 +271,15 @@ var Maptastic = function(config) {
 	    break;
 
 	    case 37: // left arrow
-	        delta[0] -= increment;
+	      delta[0] -= increment;
 	    break;
 
 	    case 38: // up arrow
-	        delta[1] -= increment;
+	      delta[1] -= increment;
 	    break;
 
 	    case 39: // right arrow
-	        delta[0] += increment;
+	      delta[0] += increment;
 	    break;
 
 	    case 40: // down arrow
@@ -249,9 +291,43 @@ var Maptastic = function(config) {
 	      dirty = true;
 	    break;
 
-	     case 83: // s key, manually stop dragging (fix annoying trackpad behavior when fine-tuning)
+	    case 83: // s key, manually stop dragging (fix annoying trackpad behavior when fine-tuning)
 	      dragging = false;
 	      dirty = true;
+	    break;
+
+	    case 66: // b key, toggle projector bounds rectangle.
+	    	showScreenBounds = !showScreenBounds;
+	    	draw();
+	    break;
+
+	    case 72: // h key, flip horizontal.
+	    	if(selectedLayer) {
+	    		swapLayerPoints(selectedLayer.sourcePoints, 0, 1);
+	    		swapLayerPoints(selectedLayer.sourcePoints, 3, 2);
+	    		updateTransform();
+	    		draw();
+	    	}
+	    break;
+
+	    case 86: // v key, flip vertical.
+	    	if(selectedLayer) {
+	    		swapLayerPoints(selectedLayer.sourcePoints, 0, 3);
+	    		swapLayerPoints(selectedLayer.sourcePoints, 1, 2);
+	    		updateTransform();
+	    		draw();
+	    	}
+	    break;
+
+	    case 82: // r key, rotate 90 degrees.
+	    	if(selectedLayer) {
+	    		// it's like a cube of the rubix...
+	    		swapLayerPoints(selectedLayer.targetPoints, 0, 3);
+					swapLayerPoints(selectedLayer.targetPoints, 0, 2);
+	    		swapLayerPoints(selectedLayer.targetPoints, 0, 1);
+	    		updateTransform();
+	    		draw();
+	    	}
 	    break;
 	  }
 
