@@ -222,6 +222,26 @@ var Maptastic = function(config) {
 	  resize();
 	};
 
+	var rotateLayer = function(layer, angle) {
+		var s = Math.sin(angle);
+		var c = Math.cos(angle);
+
+		var centerPoint = [0,0];
+    for(var p = 0; p < selectedLayer.targetPoints.length; p++) {
+      centerPoint[0] += selectedLayer.targetPoints[p][0];
+      centerPoint[1] += selectedLayer.targetPoints[p][1];
+    }
+    centerPoint[0] /= 4;
+    centerPoint[1] /= 4;
+
+    for(var p = 0; p < selectedLayer.targetPoints.length; p++) {
+    	var px = selectedLayer.targetPoints[p][0] - centerPoint[0];
+    	var py = selectedLayer.targetPoints[p][1] - centerPoint[1];
+			selectedLayer.targetPoints[p][0] = (px * c) - (py * s) + centerPoint[0];
+    	selectedLayer.targetPoints[p][1] = (px * s) - (py * c) + centerPoint[1];
+    }
+	}
+
 	var keyDown = function(event) {
 	  if(!configActive){
 	    if(event.keyCode == 32 && event.shiftKey){
@@ -297,10 +317,7 @@ var Maptastic = function(config) {
 
 	    case 82: // r key, rotate 90 degrees.
 	    	if(selectedLayer) {
-	    		// it's like a cube of the rubix...
-	    		swapLayerPoints(selectedLayer.targetPoints, 0, 3);
-					swapLayerPoints(selectedLayer.targetPoints, 0, 2);
-	    		swapLayerPoints(selectedLayer.targetPoints, 0, 1);
+	    		rotateLayer(selectedLayer, Math.PI / 2);
 	    		updateTransform();
 	    		draw();
 	    	}
