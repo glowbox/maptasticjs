@@ -341,12 +341,7 @@ var Maptastic = function(config) {
 
 	    case 82: // r key, rotate 90 degrees.
 	    	if(selectedLayer) {
-	    		
 	    		rotateLayer(selectedLayer, Math.PI / 2);
-	    		// it's like a cube of the rubix...
-	    	/*	swapLayerPoints(selectedLayer.targetPoints, 0, 3);
-					swapLayerPoints(selectedLayer.targetPoints, 0, 2);
-	    		swapLayerPoints(selectedLayer.targetPoints, 0, 1);*/
 	    		updateTransform();
 	    		draw();
 	    	}
@@ -354,17 +349,19 @@ var Maptastic = function(config) {
 	  }
 
 	  // if a layer or point is selected, add the delta amounts (set above via arrow keys)
-	  if(selectedPoint) {
-	    selectedPoint[0] += delta[0];
-	    selectedPoint[1] += delta[1];
-	    dirty = true;
-	  } else if(selectedLayer) {
-	    for(var i = 0; i < selectedLayer.targetPoints.length; i++){
-	      selectedLayer.targetPoints[i][0] += delta[0];
-	      selectedLayer.targetPoints[i][1] += delta[1];
-	    }
-	    dirty = true;
-	  }
+	  if(!showScreenBounds) {
+		  if(selectedPoint) {
+		    selectedPoint[0] += delta[0];
+		    selectedPoint[1] += delta[1];
+		    dirty = true;
+		  } else if(selectedLayer) {
+		    for(var i = 0; i < selectedLayer.targetPoints.length; i++){
+		      selectedLayer.targetPoints[i][0] += delta[0];
+		      selectedLayer.targetPoints[i][1] += delta[1];
+		    }
+		    dirty = true;
+		  }
+		}
 
 	  // update the transform and redraw if needed
 	  if(dirty){
@@ -462,7 +459,7 @@ var Maptastic = function(config) {
 	};
 
 	var mouseDown = function(event) {
-	  if(!configActive){
+	  if(!configActive || showScreenBounds){
 	    return;
 	  }
 	  event.preventDefault();
@@ -605,6 +602,7 @@ var Maptastic = function(config) {
 	    selectedPoint = null;
 	    selectedLayer = null;
 	    dragging = false;
+	    showScreenBounds = false;
 	  } else {
 	    draw();
 	  }

@@ -325,17 +325,19 @@ var Maptastic = function(config) {
 	  }
 
 	  // if a layer or point is selected, add the delta amounts (set above via arrow keys)
-	  if(selectedPoint) {
-	    selectedPoint[0] += delta[0];
-	    selectedPoint[1] += delta[1];
-	    dirty = true;
-	  } else if(selectedLayer) {
-	    for(var i = 0; i < selectedLayer.targetPoints.length; i++){
-	      selectedLayer.targetPoints[i][0] += delta[0];
-	      selectedLayer.targetPoints[i][1] += delta[1];
-	    }
-	    dirty = true;
-	  }
+	  if(!showScreenBounds) {
+		  if(selectedPoint) {
+		    selectedPoint[0] += delta[0];
+		    selectedPoint[1] += delta[1];
+		    dirty = true;
+		  } else if(selectedLayer) {
+		    for(var i = 0; i < selectedLayer.targetPoints.length; i++){
+		      selectedLayer.targetPoints[i][0] += delta[0];
+		      selectedLayer.targetPoints[i][1] += delta[1];
+		    }
+		    dirty = true;
+		  }
+		}
 
 	  // update the transform and redraw if needed
 	  if(dirty){
@@ -433,7 +435,7 @@ var Maptastic = function(config) {
 	};
 
 	var mouseDown = function(event) {
-	  if(!configActive){
+	  if(!configActive || showScreenBounds){
 	    return;
 	  }
 	  event.preventDefault();
@@ -576,6 +578,7 @@ var Maptastic = function(config) {
 	    selectedPoint = null;
 	    selectedLayer = null;
 	    dragging = false;
+	    showScreenBounds = false;
 	  } else {
 	    draw();
 	  }
