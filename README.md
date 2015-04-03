@@ -45,9 +45,13 @@ Since the idea is to have a projector aimed all crazy-like, the controls are all
 
 `SHIFT` + `drag` move selcted quad/corner point with 10x precision
 
+`ALT` + `drag` rotate and scale selected quad
+
 `Arrow keys` move selected quad/corner point
 
 `SHIFT` + `Arrow keys` move selected quad/corner point by 10 pixels
+
+`ALT` + `Arrow keys` rotate and scale selected quad
 
 `'s'` Halt current drag operation without releasing mouse (helps with drag/unclick annoying behavior on trackpads)
 
@@ -120,6 +124,12 @@ Sets the current mapping layout. The schema must match that returned from `getLa
 	  {
 	    'id': 'some-element-id',
 	    'targetPoints': [
+	      [x1, y1],
+	      [x2, y2],
+	      [x3, y3],
+	      [x4, y4]
+	    ],
+	    'sourcePoints': [
 	      [x1, y1],
 	      [x2, y2],
 	      [x3, y3],

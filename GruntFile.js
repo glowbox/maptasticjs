@@ -17,15 +17,23 @@ module.exports = function(grunt) {
         src: 'build/maptastic.js',
         dest: 'build/maptastic.min.js'
       }
+    },
+    watch: {
+      scripts: {
+        files: ['src/*.js'],
+        tasks: ['default'],
+        options: {
+          spawn: false
+        }
+      }
     }
   });
 
-  // Load the plugin that provides the "uglify" task.
+  grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-concat');
 
-  // Default task(s).
+  
   grunt.registerTask('default', ['concat', 'uglify']);
   grunt.registerTask('dev', ['concat']);
-
 };

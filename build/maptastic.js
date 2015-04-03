@@ -33,14 +33,14 @@ var Maptastic = function(config) {
     }
   }
 
-  var showLayerNames  = getProp(config, 'labels', true);
-  var showCrosshairs  = getProp(config, 'crosshairs', false);
-  var showScreenBounds  = getProp(config, 'screenbounds', false);
-  var autoSave        = getProp(config, 'autoSave', true);
-  var autoLoad        = getProp(config, 'autoLoad', true);
-  var layerList       = getProp(config, 'layers', []);
+  var showLayerNames       = getProp(config, 'labels', true);
+  var showCrosshairs       = getProp(config, 'crosshairs', false);
+  var showScreenBounds     = getProp(config, 'screenbounds', false);
+  var autoSave             = getProp(config, 'autoSave', true);
+  var autoLoad             = getProp(config, 'autoLoad', true);
+  var layerList            = getProp(config, 'layers', []);
   var layoutChangeListener = getProp(config, 'onchange', function(){} );
-  var localStorageKey = 'maptastic.layers';
+  var localStorageKey      = 'maptastic.layers';
 
   var canvas = null;
   var context = null;
@@ -57,10 +57,11 @@ var Maptastic = function(config) {
   var selectionRadius = 20;
   var hoveringPoint = null;
   var hoveringLayer = null;
+  var dragOperation = "move";
 
   var mousePosition = [];
   var mouseDelta = [];
-
+  var mouseDownPoint = [];
 
 	// Compute linear distance.
 	var distanceTo = function(x1, y1, x2, y2) {
@@ -250,19 +251,41 @@ var Maptastic = function(config) {
 		var s = Math.sin(angle);
 		var c = Math.cos(angle);
 
-		var centerPoint = [0,0];
-    for(var p = 0; p < selectedLayer.targetPoints.length; p++) {
-      centerPoint[0] += selectedLayer.targetPoints[p][0];
-      centerPoint[1] += selectedLayer.targetPoints[p][1];
+		var centerPoint = [0, 0];
+    for(var p = 0; p < layer.targetPoints.length; p++) {
+      centerPoint[0] += layer.targetPoints[p][0];
+      centerPoint[1] += layer.targetPoints[p][1];
     }
+
     centerPoint[0] /= 4;
     centerPoint[1] /= 4;
 
-    for(var p = 0; p < selectedLayer.targetPoints.length; p++) {
-    	var px = selectedLayer.targetPoints[p][0] - centerPoint[0];
-    	var py = selectedLayer.targetPoints[p][1] - centerPoint[1];
-			selectedLayer.targetPoints[p][0] = (px * c) - (py * s) + centerPoint[0];
-    	selectedLayer.targetPoints[p][1] = (px * s) - (py * c) + centerPoint[1];
+    for(var p = 0; p < layer.targetPoints.length; p++) {
+    	var px = layer.targetPoints[p][0] - centerPoint[0];
+    	var py = layer.targetPoints[p][1] - centerPoint[1];
+
+			layer.targetPoints[p][0] = (px * c) - (py * s) + centerPoint[0];
+    	layer.targetPoints[p][1] = (px * s) + (py * c) + centerPoint[1];
+    }
+	}
+
+	var scaleLayer = function(layer, scale) {
+
+		var centerPoint = [0, 0];
+    for(var p = 0; p < layer.targetPoints.length; p++) {
+      centerPoint[0] += layer.targetPoints[p][0];
+      centerPoint[1] += layer.targetPoints[p][1];
+    }
+
+    centerPoint[0] /= 4;
+    centerPoint[1] /= 4;
+
+    for(var p = 0; p < layer.targetPoints.length; p++) {
+    	var px = layer.targetPoints[p][0] - centerPoint[0];
+    	var py = layer.targetPoints[p][1] - centerPoint[1];
+
+			layer.targetPoints[p][0] = (px * scale) + centerPoint[0];
+    	layer.targetPoints[p][1] = (py * scale) + centerPoint[1];
     }
 	}
 
@@ -342,6 +365,7 @@ var Maptastic = function(config) {
 	    case 82: // r key, rotate 90 degrees.
 	    	if(selectedLayer) {
 	    		rotateLayer(selectedLayer, Math.PI / 2);
+	    		//rotateLayer(selectedLayer, 0.002);
 	    		updateTransform();
 	    		draw();
 	    	}
@@ -355,10 +379,15 @@ var Maptastic = function(config) {
 		    selectedPoint[1] += delta[1];
 		    dirty = true;
 		  } else if(selectedLayer) {
-		    for(var i = 0; i < selectedLayer.targetPoints.length; i++){
-		      selectedLayer.targetPoints[i][0] += delta[0];
-		      selectedLayer.targetPoints[i][1] += delta[1];
-		    }
+		  	if(event.altKey == true) {
+					rotateLayer(selectedLayer,  delta[0] * 0.01);
+		      scaleLayer(selectedLayer,  (delta[1] * -0.005) + 1.0);
+		  	} else {
+			    for(var i = 0; i < selectedLayer.targetPoints.length; i++){
+			      selectedLayer.targetPoints[i][0] += delta[0];
+			      selectedLayer.targetPoints[i][1] += delta[1];
+			    }
+			  }
 		    dirty = true;
 		  }
 		}
@@ -388,16 +417,24 @@ var Maptastic = function(config) {
 	  mousePosition[1] = event.clientY;
 
 	  if(dragging) {
+
 	    var scale = event.shiftKey ? 0.1 : 1;
 	    
 	    if(selectedPoint) {  
 	      selectedPoint[0] += mouseDelta[0] * scale;
 	      selectedPoint[1] += mouseDelta[1] * scale;
 	    } else if(selectedLayer) {
-	      for(var i = 0; i < selectedLayer.targetPoints.length; i++){
-	        selectedLayer.targetPoints[i][0] += mouseDelta[0] * scale;
-	        selectedLayer.targetPoints[i][1] += mouseDelta[1] * scale;
-	      }
+	      
+	      // Alt-drag to rotate and scale
+	    	if(event.altKey == true){
+		      rotateLayer(selectedLayer,  mouseDelta[0] * (0.01 * scale));
+		      scaleLayer(selectedLayer,  (mouseDelta[1] * (-0.005 * scale)) + 1.0);
+	    	} else {
+		    	for(var i = 0; i < selectedLayer.targetPoints.length; i++){
+		        selectedLayer.targetPoints[i][0] += mouseDelta[0] * scale;
+		        selectedLayer.targetPoints[i][1] += mouseDelta[1] * scale;
+		      }	
+	    	}
 	    }
 
 	    updateTransform();
@@ -459,7 +496,7 @@ var Maptastic = function(config) {
 	};
 
 	var mouseDown = function(event) {
-	  if(!configActive || showScreenBounds){
+	  if(!configActive || showScreenBounds) {
 	    return;
 	  }
 	  event.preventDefault();
@@ -477,6 +514,9 @@ var Maptastic = function(config) {
 
 	  var mouseX = event.clientX;
 	  var mouseY = event.clientY;
+
+	  mouseDownPoint[0] = mouseX;
+	  mouseDownPoint[1] = mouseY;
 
 	  for(var i = 0; i < layers.length; i++) {
 	    var layer = layers[i];
@@ -564,6 +604,7 @@ var Maptastic = function(config) {
         for(var n = 0; n < layers.length; n++){
           if(layers[n].element.id == data[i].id) {
             layers[n].targetPoints = clonePoints(data[i].targetPoints);
+            layers[n].sourcePoints = clonePoints(data[i].sourcePoints);
           }
         }
       }
@@ -630,7 +671,8 @@ var Maptastic = function(config) {
     for(var i = 0; i < layers.length; i++) {
       layout.push({
         'id': layers[i].element.id,
-        'targetPoints': clonePoints(layers[i].targetPoints)
+        'targetPoints': clonePoints(layers[i].targetPoints),
+        'sourcePoints': clonePoints(layers[i].sourcePoints)
       });
     }
     return layout;
@@ -643,6 +685,7 @@ var Maptastic = function(config) {
         if(layers[n].element.id == layout[i].id) {
           console.log("Setting points.");
           layers[n].targetPoints = clonePoints(layout[i].targetPoints);
+          layers[n].sourcePoints = clonePoints(layout[i].sourcePoints);
           exists = true;
         }
       }
