@@ -58,6 +58,7 @@ var Maptastic = function(config) {
   var hoveringPoint = null;
   var hoveringLayer = null;
   var dragOperation = "move";
+  var isLayerSoloed = false;
 
   var mousePosition = [];
   var mouseDelta = [];
@@ -108,61 +109,67 @@ var Maptastic = function(config) {
 	  
 	  for(var i = 0; i < layers.length; i++) {
 	    
-	    // Draw layer rectangles.
-	    context.beginPath();
-	    if(layers[i] === hoveringLayer){
-	      context.strokeStyle = "red";
-	    } else if(layers[i] === selectedLayer){
-	      context.strokeStyle = "red";
+	  	if(layers[i].visible){
+	  		layers[i].element.style.visibility = "visible";
+
+		    // Draw layer rectangles.
+		    context.beginPath();
+		    if(layers[i] === hoveringLayer){
+		      context.strokeStyle = "red";
+		    } else if(layers[i] === selectedLayer){
+		      context.strokeStyle = "red";
+		    } else {
+		      context.strokeStyle = "white";
+		    }
+		    context.moveTo(layers[i].targetPoints[0][0], layers[i].targetPoints[0][1]);
+		    for(var p = 0; p < layers[i].targetPoints.length; p++) {
+		      context.lineTo(layers[i].targetPoints[p][0], layers[i].targetPoints[p][1]);
+		    }
+		    context.lineTo(layers[i].targetPoints[3][0], layers[i].targetPoints[3][1]);
+		    context.closePath();
+		    context.stroke();
+
+		    // Draw corner points.
+		    var centerPoint = [0,0];
+		    for(var p = 0; p < layers[i].targetPoints.length; p++) {
+
+		      if(layers[i].targetPoints[p] === hoveringPoint){
+		        context.strokeStyle = "red";
+		      } else if( layers[i].targetPoints[p] === selectedPoint ) {
+		        context.strokeStyle = "red";
+		      } else {
+		        context.strokeStyle = "white";
+		      }
+		      
+		      centerPoint[0] += layers[i].targetPoints[p][0];
+		      centerPoint[1] += layers[i].targetPoints[p][1];
+		      
+		      context.beginPath();
+		      context.arc(layers[i].targetPoints[p][0], layers[i].targetPoints[p][1],
+		        selectionRadius / 2, 0, 2 * Math.PI, false);
+		      context.stroke();
+		    }
+
+		    // Find the average of the corner locations for an approximate center.
+		    centerPoint[0] /= 4;
+		    centerPoint[1] /= 4;
+
+
+		    if(showLayerNames) {
+		      // Draw the element ID in the center of the quad for reference.
+		      var label = layers[i].element.id.toUpperCase();
+		      context.font="16px sans-serif";
+		      context.textAlign = "center";
+		      var metrics = context.measureText(label);
+		      var size = [metrics.width + 8, 16 + 16]
+		      context.fillStyle = "white";
+		      context.fillRect(centerPoint[0] - size[0] / 2, centerPoint[1] - size[1] + 8, size[0], size[1]);
+		      context.fillStyle = "black";
+		      context.fillText(label, centerPoint[0], centerPoint[1]);
+		    }
 	    } else {
-	      context.strokeStyle = "white";
-	    }
-	    context.moveTo(layers[i].targetPoints[0][0], layers[i].targetPoints[0][1]);
-	    for(var p = 0; p < layers[i].targetPoints.length; p++) {
-	      context.lineTo(layers[i].targetPoints[p][0], layers[i].targetPoints[p][1]);
-	    }
-	    context.lineTo(layers[i].targetPoints[3][0], layers[i].targetPoints[3][1]);
-	    context.closePath();
-	    context.stroke();
-
-	    // Draw corner points.
-	    var centerPoint = [0,0];
-	    for(var p = 0; p < layers[i].targetPoints.length; p++) {
-
-	      if(layers[i].targetPoints[p] === hoveringPoint){
-	        context.strokeStyle = "red";
-	      } else if( layers[i].targetPoints[p] === selectedPoint ) {
-	        context.strokeStyle = "red";
-	      } else {
-	        context.strokeStyle = "white";
-	      }
-	      
-	      centerPoint[0] += layers[i].targetPoints[p][0];
-	      centerPoint[1] += layers[i].targetPoints[p][1];
-	      
-	      context.beginPath();
-	      context.arc(layers[i].targetPoints[p][0], layers[i].targetPoints[p][1],
-	        selectionRadius / 2, 0, 2 * Math.PI, false);
-	      context.stroke();
-	    }
-
-	    // Find the average of the corner locations for an approximate center.
-	    centerPoint[0] /= 4;
-	    centerPoint[1] /= 4;
-
-
-	    if(showLayerNames) {
-	      // Draw the element ID in the center of the quad for reference.
-	      var label = layers[i].element.id.toUpperCase();
-	      context.font="16px sans-serif";
-	      context.textAlign = "center";
-	      var metrics = context.measureText(label);
-	      var size = [metrics.width + 8, 16 + 16]
-	      context.fillStyle = "white";
-	      context.fillRect(centerPoint[0] - size[0] / 2, centerPoint[1] - size[1] + 8, size[0], size[1]);
-	      context.fillStyle = "black";
-	      context.fillText(label, centerPoint[0], centerPoint[1]);
-	    }
+	  		layers[i].element.style.visibility = "hidden";
+	  	}
 	  }
 
 	  // Draw mouse crosshairs
@@ -304,6 +311,8 @@ var Maptastic = function(config) {
 	  var increment = event.shiftKey ? 10 : 1;
 	  var dirty = false;
 	  var delta = [0, 0];
+
+	  console.log(key);
 	  switch(key){
 
 	    case 32: // spacebar
@@ -334,9 +343,25 @@ var Maptastic = function(config) {
 	      dirty = true;
 	    break;
 
-	    case 83: // s key, manually stop dragging (fix annoying trackpad behavior when fine-tuning)
-	      dragging = false;
-	      dirty = true;
+	    case 83: // s key, solo/unsolo quads
+	      if(!isLayerSoloed) {
+
+	      	if(selectedLayer != null) {
+		      	for(var i = 0; i < layers.length; i++){
+		      		layers[i].visible = false;
+		      	}
+		      	selectedLayer.visible = true;
+		      	dirty = true;
+		      	isLayerSoloed = true;
+		      }
+	      } else {
+	      	for(var i = 0; i < layers.length; i++){
+		      		layers[i].visible = true;
+		      	}
+	      	isLayerSoloed = false;
+	      	dirty = true;
+
+	      }
 	    break;
 
 	    case 66: // b key, toggle projector bounds rectangle.
@@ -458,20 +483,21 @@ var Maptastic = function(config) {
 
 	    for(var i = 0; i < layers.length; i++) {
 	      var layer = layers[i];
-
-	      for(var p = 0; p < layer.targetPoints.length; p++) {
-	        var point = layer.targetPoints[p];
-	        if(distanceTo(point[0], point[1], mouseX, mouseY) < selectionRadius) {
-	          canvas.style.cursor = 'pointer';
-	          hoveringPoint = point;
-	          break;
-	        }
-	      }
+	      if(layer.visible){
+		      for(var p = 0; p < layer.targetPoints.length; p++) {
+		        var point = layer.targetPoints[p];
+		        if(distanceTo(point[0], point[1], mouseX, mouseY) < selectionRadius) {
+		          canvas.style.cursor = 'pointer';
+		          hoveringPoint = point;
+		          break;
+		        }
+		      }
+	    	}
 	    }
 
 	    hoveringLayer = null;
 	    for(var i = 0; i < layers.length; i++) {
-	      if(pointInLayer(mousePosition, layers[i])){
+	      if(layers[i].visible && pointInLayer(mousePosition, layers[i])){
 	        hoveringLayer = layers[i];
 	        break;
 	      }
@@ -569,6 +595,7 @@ var Maptastic = function(config) {
 	  element.style.margin = '0px';
 
 	  var layer = {
+	  	'visible' : true,
 	    'element' : element,
 	    'width' : element.clientWidth,
 	    'height' : element.clientHeight,
