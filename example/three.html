@@ -1,0 +1,60 @@
+	<html>
+	<head>
+		<style>
+			body{
+				background:black; 
+			}
+		</style>
+	</head>
+	<body>
+
+		<script src="../build/maptastic.js"></script>
+		<script src="three.min.r69.js"></script>
+		<script>
+			
+			var scene;
+			var renderer;
+			var camera;
+
+			scene = new THREE.Scene();
+			renderer = new THREE.WebGLRenderer();
+			renderer.setSize(480,360);
+			renderer.setClearColor(0x202020);
+			document.body.appendChild(renderer.domElement);
+
+			camera = new THREE.PerspectiveCamera(50, 480/360);
+
+			var light = new THREE.PointLight({color:0xffffff});
+			light.position.set(30,20,10);
+			scene.add(light);
+
+			var light2 = new THREE.PointLight({color:0x455265});
+			light2.position.set(-30,-20,10);
+			scene.add(light2);
+
+			var box = new THREE.Mesh(
+				new THREE.BoxGeometry(10,10,10),
+				new THREE.MeshLambertMaterial({color:0xffffff})
+			);
+			scene.add(box);
+
+			camera.position.set(0,10,20);
+			camera.lookAt(scene.position);
+
+			function render(){
+				box.rotation.x += 0.01;
+				box.rotation.z -= 0.008914;
+				renderer.render(scene, camera);
+				window.requestAnimationFrame(render);
+			}
+
+			render();
+
+			renderer.domElement.id = "webgl-canvas";
+
+			Maptastic(renderer.domElement);
+
+		</script>
+
+	</body>
+	</html>
