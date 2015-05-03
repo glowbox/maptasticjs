@@ -4,34 +4,40 @@
 <style>
 
 body{
-  margin:0;
-  padding:0;
-  background:black;
-  color:white;
+	margin:0;
+	padding:0;
+	background:black;
+	color:white;
 }
 
 </style>
 </head>
 
 <body>
-  <pre id="controls" style="width:600pxs; height:175px; background:#404040">
+	<pre id="controls" style="width:600px; height:250px; background:#404040">
 SHIFT-Space: Toggle edit mode
 
 In Edit Mode
 
 click / drag:       select and move quads/corner points
 SHIFT + drag:       move selcted quad/corner point with 10x precision
+ALT + drag:         rotate/scale selected quad
 Arrow keys:         move selected quad/corner point
 SHIFT + Arrow keys: move selected quad/corner point by 10 pixels
-'s':                Halt current drag operation without releasing mouse
+ALT + Arrow keys:   rotate/scale selected quad
+'s':                Solo/unsolo selected quad
 'c':                Toggle mouse cursor crosshairs
-  </pre>
-  <iframe src="//player.vimeo.com/video/108531008" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen id="video-test"></iframe>
+'r':                Rotate selected layer 90 degrees clock-wise
+'h':                Flip selected layer horizontally
+'v':                Flip selected layer vertically
+'b':                Show/Hide projector bounds
+	</pre>
+	<iframe src="//player.vimeo.com/video/108531008" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen id="video-test"></iframe>
 
-  <script src="../build/maptastic.min.js"></script>
-  <script>
-    Maptastic("video-test", "controls");
-  </script>
+	<script src="../build/maptastic.min.js"></script>
+	<script>
+		Maptastic("video-test", "controls");
+	</script>
 </body>
 
 </html>
