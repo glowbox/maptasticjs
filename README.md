@@ -90,7 +90,7 @@ For more advanced useage, specify a configuration object. Available configuratio
 	var configObject = {
 		autoSave: false,
 		autoLoad: false,
-		onLayoutChange: myChangeHandler,
+		onchange: myChangeHandler,
 		layers: ["element-id1", "element-id2"]
 	};
 	var maptastic = Maptastic(configObject);
@@ -99,7 +99,7 @@ For more advanced useage, specify a configuration object. Available configuratio
 
 `layers` Array, default *empty*. Identical to Option 1 above, an array of IDs or HTML elements to be used as Maptastic layers.
 
-`layoutChangeListener` function, default *null*. A function to be invoked whenever the layer layout is changed (if you want to implement your own save/load functionality).
+`onchange` function, default *null*. A function to be invoked whenever the layer layout is changed (if you want to implement your own save/load functionality).
 
 `crosshairs` boolean, default *false*. Set the default crosshairs setting for edit mode, this can be toggled at run time with the `c` key.
 
