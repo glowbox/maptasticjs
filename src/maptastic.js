@@ -1,5 +1,5 @@
 
-var Maptastic = function(config) {
+export default function Maptastic(config) {
 
   var getProp = function(cfg, key, defaultVal){
     if(cfg && cfg.hasOwnProperty(key) && (cfg[key] !== null)) {
@@ -661,8 +661,8 @@ var Maptastic = function(config) {
 	};
 
 	var resize = function() {
-	  viewWidth = window.innerWidth;
-	  viewHeight = window.innerHeight;
+	  // viewWidth = window.innerWidth;
+	  // viewHeight = window.innerHeight;
 	  canvas.width = window.innerWidth;
 	  canvas.height = window.innerHeight;
 

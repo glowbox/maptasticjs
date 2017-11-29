@@ -1,8 +1,19 @@
-module.exports = function(grunt) {
+module.exports = function (grunt) {
 
   // Project configuration.
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
+    babel: {
+      options: {
+        sourceMap: true,
+        presets: ['env']
+      },
+      dist: {
+        files: {
+          'dist/maptastic.js': 'build/maptastic.js'
+        }
+      }
+    },
     concat: {
       dist: {
         src: ['lib/*.js', 'src/*.js'],
@@ -14,8 +25,8 @@ module.exports = function(grunt) {
         banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
       },
       build: {
-        src: 'build/maptastic.js',
-        dest: 'build/maptastic.min.js'
+        src: 'dist/maptastic.js',
+        dest: 'dist/maptastic.min.js'
       }
     },
     watch: {
@@ -32,8 +43,9 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-concat');
+  grunt.loadNpmTasks('grunt-babel');
 
-  
-  grunt.registerTask('default', ['concat', 'uglify']);
-  grunt.registerTask('dev', ['concat']);
+
+  grunt.registerTask('default', ['concat', 'babel', 'uglify']);
+  grunt.registerTask('dev', ['concat', 'babel']);
 };
