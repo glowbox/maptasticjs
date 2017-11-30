@@ -1,5 +1,7 @@
+const { solve } = require('numeric');
 
-export default function Maptastic(config) {
+
+module.exports = function Maptastic(config) {
 
   var getProp = function(cfg, key, defaultVal){
     if(cfg && cfg.hasOwnProperty(key) && (cfg[key] !== null)) {
@@ -742,4 +744,4 @@ export default function Maptastic(config) {
 			addLayer(target, targetPoints);
 		}
   }
-};
+}

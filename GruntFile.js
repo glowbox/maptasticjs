@@ -10,14 +10,20 @@ module.exports = function (grunt) {
       },
       dist: {
         files: {
-          'dist/maptastic.js': 'build/maptastic.js'
+          'dist/maptastic.js': 'dist/maptastic.js'
         }
+      }
+    },
+    browserify: {
+      client: {
+        src: ['src/**/*.js'],
+        dest: 'dist/maptastic.js',
       }
     },
     concat: {
       dist: {
-        src: ['lib/*.js', 'src/*.js'],
-        dest: 'build/maptastic.js',
+        src: ['dist/maptastic.js', 'lib/*.js'],
+        dest: 'dist/maptastic.js',
       }
     },
     uglify: {
@@ -44,8 +50,9 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-babel');
+  grunt.loadNpmTasks('grunt-browserify');
 
 
-  grunt.registerTask('default', ['concat', 'babel', 'uglify']);
+  grunt.registerTask('default', ['browserify', 'babel', 'uglify']);
   grunt.registerTask('dev', ['concat', 'babel']);
 };
