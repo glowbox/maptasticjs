@@ -290,7 +290,6 @@ module.exports = function Maptastic(config) {
 	  var dirty = false;
 	  var delta = [0, 0];
 
-	  console.log(key);
 	  switch(key){
 
 	    case 32: // spacebar
