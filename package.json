@@ -2,6 +2,7 @@
   "name": "maptastic",
   "version": "1.0.0",
   "main": "dist/maptastic.js",
+  "license": "SEE LICENSE IN license.txt",
   "files": [
     "license.txt",
     "src/**/*",
