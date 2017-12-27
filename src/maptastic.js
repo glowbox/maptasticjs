@@ -1,7 +1,7 @@
 const { solve } = require('numeric');
 
 
-module.exports = function Maptastic(config) {
+function Maptastic(config) {
 
   var getProp = function(cfg, key, defaultVal){
     if(cfg && cfg.hasOwnProperty(key) && (cfg[key] !== null)) {
@@ -744,3 +744,7 @@ module.exports = function Maptastic(config) {
 		}
   }
 }
+
+// Exports
+module.exports = Maptastic;
+window.Maptastic = Maptastic;
