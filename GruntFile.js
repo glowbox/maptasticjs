@@ -16,7 +16,7 @@ module.exports = function (grunt) {
     },
     browserify: {
       client: {
-        src: ['src/**/*.js'],
+        src: ['src/maptastic.js'],
         dest: 'dist/maptastic.js',
       }
     },
@@ -48,11 +48,10 @@ module.exports = function (grunt) {
 
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-uglify');
-  grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-babel');
   grunt.loadNpmTasks('grunt-browserify');
 
-
+  // first bundle, then transpile, then minify
   grunt.registerTask('default', ['browserify', 'babel', 'uglify']);
-  grunt.registerTask('dev', ['concat', 'babel']);
+  grunt.registerTask('dev', ['browserify']);
 };
