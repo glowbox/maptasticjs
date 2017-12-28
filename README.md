@@ -7,10 +7,12 @@ Javascript/CSS projection mapping utility.  Put your internets on things!
 
 ### Usage:
 
-When you include `maptastic.min.js` in your page, a new class named `Maptastic` is defined. The first step is to instantiate Maptastic, which can be done a couple of different ways depending on your needs. For most simple cases, this only requires a _single line of code_.
+When you include `maptastic.min.js` in your page, a new class named `Maptastic` is defined. The first step is to instantiate Maptastic, which can be done a couple of different ways depending on your needs. For most simple cases, this only requires a _single line of code_. 
 
 [SHOW ME THE DEMO](https://glowbox.github.io/maptasticjs/example/index.html)
 
+
+```html
 	<html>
 	<head>
 		<style>
@@ -32,7 +34,13 @@ When you include `maptastic.min.js` in your page, a new class named `Maptastic` 
 
 	</body>
 	</html>
+```
 
+For more advanced needs, `Mapstastic` can also be imported as a CommonJS module.
+```javascript
+const Maptastic = require('maptastic');
+const map = new Maptastic("so-simple");
+```
 
 ## Controls
 Since the idea is to have a projector aimed all crazy-like, the controls are all keyboard and mouse based since any UI would either get in the way, or would be impossible to see in most cases anyway.
@@ -86,7 +94,7 @@ Specify a list of HTML elements, element IDs, or a mix of both. These elements w
 #### Option 2 - Advanced Configuration
 
 For more advanced useage, specify a configuration object. Available configuration properties are defined below.
-
+```javascript
 	var configObject = {
 		autoSave: false,
 		autoLoad: false,
@@ -94,7 +102,7 @@ For more advanced useage, specify a configuration object. Available configuratio
 		layers: ["element-id1", "element-id2"]
 	};
 	var maptastic = Maptastic(configObject);
-
+```
 ##### Configuration options
 
 `layers` Array, default *empty*. Identical to Option 1 above, an array of IDs or HTML elements to be used as Maptastic layers.
@@ -121,7 +129,7 @@ Returns an array of layer descriptor objects that represent the current mapping 
 #### setLayout( _layoutData_ )
 
 Sets the current mapping layout. The schema must match that returned from `getLayout` and is as follows:
-
+```javascript
 	[
 	  {
 	    'id': 'some-element-id',
@@ -140,7 +148,7 @@ Sets the current mapping layout. The schema must match that returned from `getLa
 	  },
 	  ...
 	]
-
+```
 
 #### addLayer( _target_, _coordinates_ )
 
