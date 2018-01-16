@@ -20,12 +20,6 @@ module.exports = function (grunt) {
         dest: 'dist/maptastic.js',
       }
     },
-    concat: {
-      dist: {
-        src: ['dist/maptastic.js', 'lib/*.js'],
-        dest: 'dist/maptastic.js',
-      }
-    },
     uglify: {
       options: {
         banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
