@@ -662,8 +662,6 @@ function Maptastic(config) {
 	};
 
 	var resize = function() {
-	  // viewWidth = window.innerWidth;
-	  // viewHeight = window.innerHeight;
 	  canvas.width = window.innerWidth;
 	  canvas.height = window.innerHeight;
 

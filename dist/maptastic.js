@@ -5979,8 +5979,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             };
 
             var resize = function resize() {
-                // viewWidth = window.innerWidth;
-                // viewHeight = window.innerHeight;
                 canvas.width = window.innerWidth;
                 canvas.height = window.innerHeight;
 
