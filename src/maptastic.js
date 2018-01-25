@@ -743,6 +743,16 @@ function Maptastic(config) {
   }
 }
 
-// Exports
-module.exports = Maptastic;
-window.Maptastic = Maptastic;
+/**
+ * AMD Loader to export
+ */
+if (typeof define === "function" && define.amd) {
+	define(["Maptastic"], function() {
+		"use strict";
+		return Maptastic;
+	});
+} else if (typeof module === "object" && module.exports) {
+	module.exports = Maptastic;
+} else {
+	window.Maptastic = Maptastic;
+}
