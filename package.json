@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "main": "dist/maptastic.js",
   "license": "SEE LICENSE IN license.txt",
+  "author":  "ben purdy (https://github.com/benpurdy)",
+  "contributors": [
+    "florian segginger (https://github.com/floriansegginger)",
+    "austin ce <austin.cawley@gmail.com>(https://github.com/austince)"
+  ],
   "files": [
     "license.txt",
     "src/**/*",
